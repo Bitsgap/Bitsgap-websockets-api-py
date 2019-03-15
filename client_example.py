@@ -28,7 +28,7 @@ authClient = BitsgapClientWs(private_key, public_key)
 # authClient.subscribe_orderbook(market, pair)
 
 # subscribe to recent_trades
-authClient.subscribe_recent_trades(market, pair)
+# authClient.subscribe_recent_trades(market, pair)
 
 # subscribe to signals
 # authClient.subscribe_signals()
@@ -59,12 +59,12 @@ authClient.subscribe_recent_trades(market, pair)
 
 # subcscribe to user messages
 # subscribe and get last messages
-authClient.subscribe_logs()
+# authClient.subscribe_logs()
 # subscribe and get only updates
 # authClient.subscribe_logs(updates_only=True)
 
 # subscribe to get user API keys list and key status for real
-authClient.subscribe_box_state()
+# authClient.subscribe_box_state()
 # subscribe to get user keys for demo
 # authClient.subscribe_box_state_demo()
 
@@ -72,7 +72,7 @@ authClient.subscribe_box_state()
 # authClient.subscribe_favorites()
 
 # subscribe to balances
-authClient.subscribe_balance()
+# authClient.subscribe_balance()
 # authClient.subscribe_balance_demo()
 
 # subscribe to open orders

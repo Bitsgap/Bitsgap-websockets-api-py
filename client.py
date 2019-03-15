@@ -102,7 +102,7 @@ class BitsgapClientWs:
         self.private_key = secret
 
     def start(self, **kwargs):
-        host = 'bitsgap.com'
+        host = 'var.bitsgap.com'
         port = 443
         ssl = True
         conn_str = f'wss://{host}/ws/?wsguid={self.public_key}'
@@ -185,8 +185,8 @@ class BitsgapClientWs:
     def get_markets(self):
         self.requests.append(self.send_message('v_conf_pairs_to', is_sub=False))
 
-    # Get market config
-    def get_market_config(self, market):
+    # Get pairs config
+    def get_pairs_config(self, market):
         self.requests.append(self.send_message('v_conf_pairs', is_sub=False, market=market))
 
     # Get recent trades for selected market and pair
@@ -197,8 +197,8 @@ class BitsgapClientWs:
     def subscribe_orderbook(self, market, pair):
         self.requests.append(self.send_message('ob', is_sub=True, market=market, pair=pair))
 
-    # get pair price for market 1 day ago
-    def get_sym(self, market, pair):
+    # Subscribe to get last ask and bid price for market
+    def subscribe_sym(self, market, pair):
         self.requests.append(self.send_message('sym', is_sub=True,  market=market, pair=pair))
 
     # get pair price for market 1 day ago
@@ -221,10 +221,6 @@ class BitsgapClientWs:
         User methods
         For using this methods need to add API keys for real markets
     """
-
-    # subscribe user favorites pairs
-    def subscribe_favorites(self):
-        self.requests.append(self.send_message('fav_pairs', is_sub=True, is_user=True))
 
     # Get user balance for real markets
     def subscribe_balance(self):
@@ -255,7 +251,7 @@ class BitsgapClientWs:
     """
         Subscribe to get real markets API keys and status
     """
-    def subscribe_box_state(self):
+    def subscribe_keys(self):
         self.requests.append(self.send_message('box.state', is_sub=True, is_user=True))
 
     """ 
@@ -349,13 +345,15 @@ class BitsgapClientWs:
     """ 
         Cancel demo order        
     """
-    def cancel_order_demo(self, market, id):
+    def cancel_order_demo(self, demokey, id):
         send_struct = {
              "type": "demo_trade",
              "skey": {
                  "proc": "cancelorder",
-                 "market": market+'.demo',
-                 "id": id
+                 "demokey": demokey,
+                 "order": {
+                    "id": id
+                 }
              }
         }
         self.requests.append( json.dumps(send_struct) )
@@ -373,6 +371,61 @@ class BitsgapClientWs:
              }
         }
         self.requests.append( json.dumps(send_struct) )
+
+    """ 
+          Move demo order        
+    """
+    def move_order_demo(self, demokey, id, price):
+        send_struct = {
+            "type": "demo_trade",
+            "skey": {
+                "proc": "moveorder",
+                "demokey": demokey,
+                "order": {
+                    "id": id,
+                    "price": price,
+                }
+            }
+        }
+        self.requests.append(json.dumps(send_struct))
+
+    """ 
+        Move real order        
+    """
+    def move_order(self, market, id, price):
+        send_struct = {
+            "type": "wstrade",
+            "data": {
+                "tradetype": "moveorder",
+                "id": id,
+                "price": price,
+                "market": market,
+            }
+        }
+        self.requests.append(json.dumps(send_struct))
+
+    """ 
+        Subscribe and request real balance        
+    """
+    def get_market_balance(self, market):
+        send_struct = {
+             "type": "users_push_subs",
+             "subs": 10,
+             "skey": {
+                 "proc": "user.balance",
+                 "market": market,
+             }
+        }
+        self.requests.append( json.dumps(send_struct) )
+
+        send_struct = {
+            "type": "wstrade",
+            "data": {
+                "tradetype": "user.get_balance",
+                "market": market,
+            }
+        }
+        self.requests.append(json.dumps(send_struct))
 
     def unsubscribe(self, key=None):
         self.requests.append(self.send_message(key, is_unsub=True))
