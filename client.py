@@ -176,7 +176,28 @@ class BitsgapClientWs:
 
         logging.debug(message)
         return json.dumps(message)
+    
+    """
+        Create control message for sending to system
+    """
+    def send_control_message(self, proc, **kwargs):
 
+        message = {
+            'type': 'users_push',
+            'skey': {
+                'proc': 'action.wstask'
+            },
+            'value': {
+                'key': proc
+            }
+        }
+        if 'params' in kwargs:
+            params = kwargs['params']
+            message['value'].update(params)
+
+        logging.debug(message)
+        return json.dumps(message)
+    
     """ 
         Market methods         
     """
@@ -302,17 +323,13 @@ class BitsgapClientWs:
 
     """ Trading methods """
 
-    """ 
+        """ 
         Place demo order 
-        For placing demo order need to get 'demokey' for selected market from 'demo.keys' subscription
         To track the status of an order, you must subscribe to a list of open orders and user messages.
     """
-    def place_order_demo(self, demokey, market, pair, side, order_type, amount, price):
+    def place_order_demo(self, market, pair, side, order_type, amount, price):
         send_struct = {
-             "type": "demo_trade",
-             "skey": {
-                 "proc": "addorder",
-                 "demokey": demokey,
+             "place": {
                  "market": market,
                  "pair": pair,
                  "side": side,
@@ -321,7 +338,7 @@ class BitsgapClientWs:
                  "price": price
              }
         }
-        self.requests.append( json.dumps(send_struct) )
+        self.requests.append(self.send_control_message('demo@place', params=send_struct))
 
     """
         Place real order
@@ -329,9 +346,7 @@ class BitsgapClientWs:
     """
     def place_order(self, market, pair, side, order_type, amount, price):
         send_struct = {
-             "type": "wstrade",
-             "data": {
-                 "tradetype": "addorder",
+             "place": {
                  "market": market,
                  "pair": pair,
                  "side": side,
@@ -340,69 +355,57 @@ class BitsgapClientWs:
                  "price": price
              }
         }
-        self.requests.append( json.dumps(send_struct) )
+        self.requests.append(self.send_control_message('order@place', params=send_struct))
 
     """ 
         Cancel demo order        
     """
-    def cancel_order_demo(self, demokey, id):
+    def cancel_order_demo(self, market, id):
         send_struct = {
-             "type": "demo_trade",
-             "skey": {
-                 "proc": "cancelorder",
-                 "demokey": demokey,
-                 "order": {
-                    "id": id
-                 }
+             "cancel": {
+                 "market": market,
+                 "id": id
              }
         }
-        self.requests.append( json.dumps(send_struct) )
+        self.requests.append(self.send_control_message('demo@cancel', params=send_struct))
 
     """ 
         Cancel real order        
     """
     def cancel_order(self, market, id):
         send_struct = {
-             "type": "wstrade",
-             "data": {
-                 "tradetype": "ordercancel",
-                 "id": id,
+             "cancel": {
                  "market": market,
+                 "id": id
              }
         }
-        self.requests.append( json.dumps(send_struct) )
+        self.requests.append(self.send_control_message('order@cancel', params=send_struct))
 
     """ 
           Move demo order        
     """
-    def move_order_demo(self, demokey, id, price):
+    def move_order_demo(self, market, id, price):
         send_struct = {
-            "type": "demo_trade",
-            "skey": {
-                "proc": "moveorder",
-                "demokey": demokey,
-                "order": {
-                    "id": id,
-                    "price": price,
-                }
-            }
+             "move": {
+                 "market": market,
+                 "price": price,
+                 "id": id
+             }
         }
-        self.requests.append(json.dumps(send_struct))
+        self.requests.append(self.send_control_message('demo@move', params=send_struct))
 
     """ 
         Move real order        
     """
     def move_order(self, market, id, price):
         send_struct = {
-            "type": "wstrade",
-            "data": {
-                "tradetype": "moveorder",
-                "id": id,
-                "price": price,
-                "market": market,
-            }
+             "move": {
+                 "market": market,
+                 "price": price,
+                 "id": id
+             }
         }
-        self.requests.append(json.dumps(send_struct))
+        self.requests.append(self.send_control_message('order@move', params=send_struct))
 
     """ 
         Subscribe and request real balance        
