@@ -13,7 +13,7 @@ class TestWSDemoOrdersAdd(TestCase):
 
     authClient.subscribe_logs()
 
-    market = 'bittrex.demo'
+    market = 'bittrex'
 
     authClient.subscribe_orders_open_demo(market)
 
