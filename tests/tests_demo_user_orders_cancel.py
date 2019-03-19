@@ -14,15 +14,11 @@ class TestWSDemoOrdersCancel(TestCase):
 
     authClient.subscribe_logs()
 
-    market = 'bittrex.demo'
+    market = 'bittrex'
 
     authClient.subscribe_orders_open_demo(market)
 
-    id = '282e68c79fd14c80ae1c67feb59691b2'
-
-    authClient.cancel_order_demo(market, id)
-
-    id = '2b63c7f0b91441d890f37c10dd582b21'
+    id = '606d836e8ef44497bc81c3ae08edb95d'
 
     authClient.cancel_order_demo(market, id)
 
