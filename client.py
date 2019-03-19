@@ -321,7 +321,9 @@ class BitsgapClientWs:
         ws_key = f'{ws_key}.{chart_scale.value}.0'
         self.requests.append(self.send_message(ws_key, is_sub=True, market=market, pair=pair))
 
-    """ Trading methods """
+    """ 
+        Trading methods 
+    """
 
     """ 
         Place demo order 
@@ -329,7 +331,7 @@ class BitsgapClientWs:
     """
     def place_order_demo(self, market, pair, side, order_type, amount, price):
         send_struct = {
-             "place": {
+             "params": {
                  "market": market,
                  "pair": pair,
                  "side": side,
@@ -338,7 +340,7 @@ class BitsgapClientWs:
                  "price": price
              }
         }
-        self.requests.append(self.send_control_message('demo@place', params=send_struct))
+        self.requests.append(self.send_control_message('demo@order_place', params=send_struct))
 
     """
         Place real order
@@ -355,80 +357,68 @@ class BitsgapClientWs:
                  "price": price
              }
         }
-        self.requests.append(self.send_control_message('order@place', params=send_struct))
+        self.requests.append(self.send_control_message('trade@order_place', params=send_struct))
 
     """ 
         Cancel demo order        
     """
     def cancel_order_demo(self, market, id):
         send_struct = {
-             "cancel": {
+             "params": {
                  "market": market,
                  "id": id
              }
         }
-        self.requests.append(self.send_control_message('demo@cancel', params=send_struct))
+        self.requests.append(self.send_control_message('demo@order_cancel', params=send_struct))
 
     """ 
         Cancel real order        
     """
     def cancel_order(self, market, id):
         send_struct = {
-             "cancel": {
+             "params": {
                  "market": market,
                  "id": id
              }
         }
-        self.requests.append(self.send_control_message('order@cancel', params=send_struct))
+        self.requests.append(self.send_control_message('trade@order_cancel', params=send_struct))
 
     """ 
-          Move demo order        
+        Move demo order 
     """
     def move_order_demo(self, market, id, price):
         send_struct = {
-             "move": {
+             "params": {
                  "market": market,
                  "price": price,
                  "id": id
              }
         }
-        self.requests.append(self.send_control_message('demo@move', params=send_struct))
+        self.requests.append(self.send_control_message('demo@order_move', params=send_struct))
 
     """ 
-        Move real order        
+        Move real order 
     """
     def move_order(self, market, id, price):
         send_struct = {
-             "move": {
+             "params": {
                  "market": market,
                  "price": price,
                  "id": id
              }
         }
-        self.requests.append(self.send_control_message('order@move', params=send_struct))
+        self.requests.append(self.send_control_message('trade@order_move', params=send_struct))
 
     """ 
-        Subscribe and request real balance        
+        Subscribe and request real balance 
     """
     def get_market_balance(self, market):
         send_struct = {
-             "type": "users_push_subs",
-             "subs": 10,
-             "skey": {
-                 "proc": "user.balance",
-                 "market": market,
+             "params": {
+                 "market": market
              }
         }
-        self.requests.append( json.dumps(send_struct) )
-
-        send_struct = {
-            "type": "wstrade",
-            "data": {
-                "tradetype": "user.get_balance",
-                "market": market,
-            }
-        }
-        self.requests.append(json.dumps(send_struct))
+        self.requests.append(self.send_control_message('trade@balance', params=send_struct))
 
     def unsubscribe(self, key=None):
         self.requests.append(self.send_message(key, is_unsub=True))
