@@ -13,9 +13,7 @@ class TestWSDemoOrdersAdd(TestCase):
 
     authClient.subscribe_logs()
 
-    market = 'bittrex'
-
-    demo_key = 'bittrex@63d9a386-d083-11e7-9ac6-901b0edee5f6'
+    market = 'bittrex.demo'
 
     authClient.subscribe_orders_open_demo(market)
 
@@ -25,6 +23,6 @@ class TestWSDemoOrdersAdd(TestCase):
     amount = '150'
     price = '0.25'
 
-    authClient.place_order_demo(demo_key, market, pair, side, order_type, amount, price)
+    authClient.place_order_demo(market, pair, side, order_type, amount, price)
 
     authClient.start(callback=my_handler)
