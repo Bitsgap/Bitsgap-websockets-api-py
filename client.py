@@ -323,7 +323,7 @@ class BitsgapClientWs:
 
     """ Trading methods """
 
-        """ 
+    """ 
         Place demo order 
         To track the status of an order, you must subscribe to a list of open orders and user messages.
     """
