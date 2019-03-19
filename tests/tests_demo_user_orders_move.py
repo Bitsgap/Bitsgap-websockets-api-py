@@ -13,13 +13,12 @@ class TestWSDemoOrdersMove(TestCase):
 
     authClient.subscribe_logs()
 
-    market = 'bittrex'
+    market = 'bittrex.demo'
 
     authClient.subscribe_orders_open_demo(market)
 
     id = 'ebff9720da944ab187680f4347e5ee03'
-    demo_key = 'bittrex@63d9a386-d083-11e7-9ac6-901b0edee5f6'
 
-    authClient.move_order_demo(demo_key, id, "0.035")
+    authClient.move_order_demo(market, id, "0.035")
 
     authClient.start(callback=my_handler)
