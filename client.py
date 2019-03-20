@@ -348,7 +348,7 @@ class BitsgapClientWs:
     """
     def place_order(self, market, pair, side, order_type, amount, price):
         send_struct = {
-             "place": {
+             "params": {
                  "market": market,
                  "pair": pair,
                  "side": side,
