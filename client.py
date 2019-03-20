@@ -102,7 +102,7 @@ class BitsgapClientWs:
         self.private_key = secret
 
     def start(self, **kwargs):
-        host = 'var.bitsgap.com'
+        host = 'www.bitsgap.com'
         port = 443
         ssl = True
         conn_str = f'wss://{host}/ws/?wsguid={self.public_key}'
