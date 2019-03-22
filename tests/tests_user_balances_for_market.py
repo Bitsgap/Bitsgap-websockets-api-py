@@ -13,6 +13,8 @@ class TestWSUserKeys(TestCase):
 
     market = 'bittrex'
 
+    authClient.subscribe_user_balance(market)
+    
     authClient.get_market_balance(market)
 
     authClient.start(callback=my_handler)
