@@ -243,6 +243,10 @@ class BitsgapClientWs:
         For using this methods need to add API keys for real markets
     """
 
+    # Get user balance for specified markets
+    def subscribe_user_balance(self, market):
+        self.requests.append(self.send_message('user.balance', is_sub=True, is_user=True, market=market))
+
     # Get user balance for real markets
     def subscribe_balance(self):
         self.requests.append(self.send_message('app.markets.balance', is_sub=True, is_user=True, trade="real"))
