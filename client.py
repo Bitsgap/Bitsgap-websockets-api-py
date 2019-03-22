@@ -280,19 +280,17 @@ class BitsgapClientWs:
         self.requests.append(self.send_message('box.state', is_sub=True, is_user=True))
 
     """ 
-        Subscribe to get demo keys
+        Subscribe to user smart positions
     """
-    def subscribe_box_state_demo(self):
-        self.requests.append(self.send_message('demo.keys', is_sub=True, is_user=True))
+    def subscribe_smart_positions(self, market):
+       self.requests.append(self.send_message('pos', is_sub=True, is_user=True, market=market))
 
-    # Subscribe to user closed orders on demo markets
-    def subscribe_shadow_pos(self, market):
-        self.requests.append(self.send_message('shadow.pos', is_sub=True, is_user=True, market=market))
-
-    # Subscribe to user closed orders on demo markets
-    def subscribe_shadow_pos_demo(self, market):
+    """ 
+        Subscribe to user smart positions on demo markets
+    """
+    def subscribe_smart_positions_demo(self, market):
         market = market + ".demo"
-        self.requests.append(self.send_message('shadow.pos', is_sub=True, is_user=True, market=market))
+        self.requests.append(self.send_message('pos', is_sub=True, is_user=True, market=market))
 
     """ 
         Subscribe to user messages
