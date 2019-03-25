@@ -293,6 +293,19 @@ class BitsgapClientWs:
         self.requests.append(self.send_message('pos', is_sub=True, is_user=True, market=market))
 
     """ 
+        Subscribe to user smart positions
+    """
+    def subscribe_shadow_orders_open(self, market):
+       self.requests.append(self.send_message('shadow', is_sub=True, is_user=True, market=market))
+
+    """ 
+        Subscribe to user smart positions on demo markets
+    """
+    def subscribe_shadow_orders_open_demo(self, market):
+        market = market + ".demo"
+        self.requests.append(self.send_message('shadow', is_sub=True, is_user=True, market=market))
+
+    """ 
         Subscribe to user messages
         If updates_only = True user will get only new messages after subscription
         Otherwise user will get last message
@@ -424,3 +437,85 @@ class BitsgapClientWs:
 
     def unsubscribe(self, key=None):
         self.requests.append(self.send_message(key, is_unsub=True))
+
+    """
+        Place shadow real order
+        To track the status of an order, you must subscribe to a list of open orders and user messages.
+    """
+    def place_shadow_order(self, market, pair, side, order_type, amount, price):
+        send_struct = {
+             "params": {
+                 "market": market,
+                 "pair": pair,
+                 "side": side,
+                 "type": order_type,
+                 "amount": amount,
+                 "price": price
+             }
+        }
+        self.requests.append(self.send_control_message('shadow@order_place', params=send_struct))
+
+    """
+        Place shadow demo order
+        To track the status of an order, you must subscribe to a list of open orders and user messages.
+    """
+    def place_shadow_order_demo(self, market, pair, side, order_type, amount, price):
+        send_struct = {
+             "params": {
+                 "market": market + '.demo',
+                 "pair": pair,
+                 "side": side,
+                 "type": order_type,
+                 "amount": amount,
+                 "price": price
+             }
+        }
+        self.requests.append(self.send_control_message('shadow@order_place', params=send_struct))
+
+    """ 
+        Cancel shadow order        
+    """
+    def cancel_shadow_order(self, market, id):
+        send_struct = {
+             "params": {
+                 "id": id
+             }
+        }
+        self.requests.append(self.send_control_message('shadow@order_cancel', params=send_struct))
+
+    """ 
+        Cancel shadow demo order        
+    """
+    def cancel_shadow_order_demo(self, market, id):
+        send_struct = {
+             "params": {
+                 "id": id
+             }
+        }
+        self.requests.append(self.send_control_message('shadow@order_cancel', params=send_struct))
+
+    """ 
+        Move shadow order 
+    """
+    def move_shadow_order(self, market, id, price):
+        send_struct = {
+             "params": {
+                 "market": market,
+                 "price": price,
+                 "id": id
+             }
+        }
+        self.requests.append(self.send_control_message('shadow@order_move', params=send_struct))
+
+    """ 
+        Move shadow demo order 
+    """
+    def move_shadow_order_demo(self, market, id, price):
+        send_struct = {
+             "params": {
+                 "market": market + '.demo',
+                 "price": price,
+                 "id": id
+             }
+        }
+        self.requests.append(self.send_control_message('shadow@order_move', params=send_struct))
